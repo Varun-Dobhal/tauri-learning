@@ -1,0 +1,37 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "enables the default permissions",
+  "windows": [
+    "main"
+  ],
+  "permissions": [
+    "core:default",
+
+    "core:app:default",
+    "core:event:default",
+    "core:image:default",
+    "core:menu:default",
+    "core:path:default",
+    "core:resources:default",
+    "core:tray:default",
+    "core:webview:default",
+    "core:window:default",
+
+    "dialog:default",
+    "dialog:allow-open",
+    "dialog:allow-save",
+    "dialog:allow-message",
+
+    "fs:default",
+    "fs:read-all",
+    "fs:write-all",
+    "fs:scope-home",
+    "fs:scope-desktop",
+    "fs:scope-document",
+    "fs:allow-read-text-file",
+    "fs:allow-write-text-file",
+
+    "notification:default"   
+  ]
+}
