@@ -36,6 +36,10 @@
     "core:window:allow-toggle-maximize",
     "core:window:allow-close",
     "core:window:allow-center",
-    "core:window:allow-set-always-on-top"
+    "core:window:allow-set-always-on-top",
+    "core:window:allow-set-fullscreen",
+    "core:window:allow-set-simple-fullscreen",
+    "core:window:allow-is-fullscreen",
+    "core:window:allow-start-dragging"
   ]
 }

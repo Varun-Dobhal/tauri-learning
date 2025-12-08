@@ -73,15 +73,16 @@ export default function ReadWriteOpenSave() {
             💾 Save File
           </button>
         </div>
-        <div style={{ fontSize: 12, color: "#666" }}>
+        <div style={{ fontSize: 12, color: "#ffffffff" }}>
           Current file: {filePath || "(new file)"}
         </div>
       </div>
 
       <textarea
-        style={{ width: "100%", height: "70vh", marginTop: 20 }}
+        className="hacker-editor"
         value={content}
         onChange={(e) => setContent(e.target.value)}
+        spellCheck={false}
       />
     </>
   );
