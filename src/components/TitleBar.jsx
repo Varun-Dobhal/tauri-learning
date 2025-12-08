@@ -33,6 +33,26 @@ export default function TitleBar({ title = "My Desktop Application" }) {
     }
   }
 
+  async function handleToggleAlwaysOnTop() {
+    try {
+      const newValue = !isAlwaysOnTop;
+      await appWindow.setAlwaysOnTop(newValue);
+      setIsAlwaysOnTop(newValue);
+    } catch (err) {
+      console.error("AlwaysOnTop error:", err);
+    }
+  }
+
+  async function handleToggleFullscreen() {
+    try {
+      const newValue = !isFullscreen;
+      await appWindow.setFullscreen(newValue);
+      setIsFullscreen(newValue);
+    } catch (err) {
+      console.error("Fullscreen error:", err);
+    }
+  }
+
   return (
     <div className="titlebar" data-tauri-drag-region>
       {/* Left side: icon + title */}
