@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { appWindow } from "@tauri-apps/api/window";
+import { getCurrentWindow } from "@tauri-apps/api/window";
 
 export default function WindowControls() {
   const [isAlwaysOnTop, setIsAlwaysOnTop] = useState(false);
+  const appWindow = getCurrentWindow();
 
   async function handleMinimize() {
     await appWindow.minimize();
