@@ -2,10 +2,11 @@
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
   "description": "enables the default permissions",
-  "windows": ["main"],
+  "windows": [
+    "main"
+  ],
   "permissions": [
     "core:default",
-
     "core:app:default",
     "core:event:default",
     "core:image:default",
@@ -15,12 +16,10 @@
     "core:tray:default",
     "core:webview:default",
     "core:window:default",
-
     "dialog:default",
     "dialog:allow-open",
     "dialog:allow-save",
     "dialog:allow-message",
-
     "fs:default",
     "fs:read-all",
     "fs:write-all",
@@ -29,9 +28,7 @@
     "fs:scope-document",
     "fs:allow-read-text-file",
     "fs:allow-write-text-file",
-
     "notification:default",
-
     "core:window:allow-minimize",
     "core:window:allow-toggle-maximize",
     "core:window:allow-close",
@@ -40,6 +37,7 @@
     "core:window:allow-set-fullscreen",
     "core:window:allow-set-simple-fullscreen",
     "core:window:allow-is-fullscreen",
-    "core:window:allow-start-dragging"
+    "core:window:allow-start-dragging",
+    "clipboard-manager:default"
   ]
 }
