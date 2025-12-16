@@ -3,7 +3,7 @@ import Notifications from "./components/Notifications.jsx";
 import ReadWriteOpenSave from "./components/ReadWriteOpenSave.jsx";
 import TitleBar from "./components/TitleBar.jsx";
 import Clipboard from "./components/Clipboard.jsx";
-
+import SystemInfo from "./components/SystemInfo.jsx";
 function App() {
   const [content, setContent] = useState(""); // editor text
   const [filePath, setFilePath] = useState(""); // current file path
@@ -14,6 +14,9 @@ function App() {
     <div className="app-root">
       {/* Title Bar */}
       <TitleBar title="Tauri App Learning" />
+
+      {/* System Info */}
+      <SystemInfo />
 
       {/* Read, Write, Save And Open */}
       <ReadWriteOpenSave
