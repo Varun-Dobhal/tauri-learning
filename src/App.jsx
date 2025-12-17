@@ -4,6 +4,8 @@ import ReadWriteOpenSave from "./components/ReadWriteOpenSave.jsx";
 import TitleBar from "./components/TitleBar.jsx";
 import Clipboard from "./components/Clipboard.jsx";
 import SystemInfo from "./components/SystemInfo.jsx";
+import AutostartToggle from "./components/AutostartToggle.jsx";
+
 function App() {
   const [content, setContent] = useState(""); // editor text
   const [filePath, setFilePath] = useState(""); // current file path
@@ -12,6 +14,9 @@ function App() {
 
   return (
     <div className="app-root">
+      {/* Autostart Toggle */}
+      <AutostartToggle />
+
       {/* Title Bar */}
       <TitleBar title="Tauri App Learning" />
 

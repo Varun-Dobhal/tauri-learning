@@ -40,7 +40,13 @@
     "clipboard-manager:allow-read-text",
     "clipboard-manager:allow-write-text",
     "os:default",
+    "os:allow-platform",
     "os:allow-version",
-    "os:allow-arch"
+    "os:allow-arch",
+    "core:app:allow-name",
+    "core:app:allow-version",
+    "autostart:allow-enable",
+    "autostart:allow-disable",
+    "autostart:allow-is-enabled"
   ]
 }

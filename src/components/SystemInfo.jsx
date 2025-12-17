@@ -7,16 +7,20 @@ export default function SystemInfo() {
 
   useEffect(() => {
     async function loadInfo() {
-      const data = {
-        os: await platform(),
-        osVersion: await version(),
-        arch: await arch(),
-        appName: await getName(),
-        appVersion: await getVersion(),
-        tauriVersion: await getTauriVersion(),
-      };
+      try {
+        const data = {
+          os: await platform(),
+          osVersion: await version(),
+          arch: await arch(),
+          appName: await getName(),
+          appVersion: await getVersion(),
+          tauriVersion: await getTauriVersion(),
+        };
 
-      setInfo(data);
+        setInfo(data);
+      } catch (err) {
+        console.error("SystemInfo error:", err);
+      }
     }
 
     loadInfo();
