@@ -1,7 +1,9 @@
 use tauri::{
     Manager, menu::{Menu, MenuItemBuilder}, tray::TrayIconBuilder
 };
- use tauri_plugin_autostart::{MacosLauncher,ManagerExt};
+use tauri_plugin_autostart::{MacosLauncher,ManagerExt};
+use sysinfo::{System, SystemExt, CpuExt};
+
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {

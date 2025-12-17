@@ -30,3 +30,4 @@ tauri-plugin-notification = "2.3.3"
 tauri-plugin-clipboard-manager = "2"
 tauri-plugin-os = "2"
 tauri-plugin-autostart = "2.5.1"
+sysinfo = { version = "0.36.1", features = ["system", "disk", "network", "component", "user", "multithread", "serde"] }
