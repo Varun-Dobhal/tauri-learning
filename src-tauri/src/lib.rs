@@ -1,8 +1,37 @@
 use tauri::{
     Manager, menu::{Menu, MenuItemBuilder}, tray::TrayIconBuilder
 };
-use tauri_plugin_autostart::{MacosLauncher,ManagerExt};
-use sysinfo::{System, SystemExt, CpuExt};
+
+use std::thread;
+use std::time::Duration;
+use sysinfo::{System};
+
+#[tauri::command]
+fn get_system_stats() -> (f32, u64, u64,String, String, String) {
+    let mut sys = System::new_all();
+
+    // CPU usage nikalne ke liye ye 3 steps follow karne hote hain: cpu ka status do points par lena padta hai.
+    // 1. Pehla refresh
+    sys.refresh_cpu_all(); 
+    
+    // 2. CPU usage calculate karne ke liye thoda wait 
+    thread::sleep(Duration::from_millis(200)); 
+    
+    // 3. Doosra refresh (ab ye actual usage nikalega)
+    sys.refresh_cpu_all(); 
+    sys.refresh_memory();
+
+    let cpu_usage = sys.global_cpu_usage();
+    let used_memory = sys.used_memory();
+    let total_memory = sys.total_memory();
+
+    let sys_name = System::name().unwrap_or_else(|| "Unknown".to_string());
+    let kernel_ver = System::kernel_version().unwrap_or_else(|| "Unknown".to_string());
+    let host_name = System::host_name().unwrap_or_else(|| "Unknown".to_string());
+
+    (cpu_usage, used_memory, total_memory,sys_name, kernel_ver, host_name)
+    
+}
 
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -19,6 +48,10 @@ pub fn run() {
                 tauri_plugin_autostart::MacosLauncher::LaunchAgent,
                 None // <--- CHANGE: Ye dusra argument (Option<Vec<String>>) missing tha
                 ))
+
+
+        //  Yaha se Stats function ko frontend se call karne ke liye expose kar rahe hain
+        .invoke_handler(tauri::generate_handler![get_system_stats])
 
         // Prevent from closing the window, hide it instead
         .on_window_event(|window, event| {

@@ -5,6 +5,7 @@ import TitleBar from "./components/TitleBar.jsx";
 import Clipboard from "./components/Clipboard.jsx";
 import SystemInfo from "./components/SystemInfo.jsx";
 import AutostartToggle from "./components/AutostartToggle.jsx";
+import SystemMonitor from "./components/SystemMonitor.jsx";
 
 function App() {
   const [content, setContent] = useState(""); // editor text
@@ -14,6 +15,9 @@ function App() {
 
   return (
     <div className="app-root">
+      {/* System Monitor */}
+      <SystemMonitor />
+
       {/* Autostart Toggle */}
       <AutostartToggle />
 
