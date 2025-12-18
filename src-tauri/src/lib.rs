@@ -4,8 +4,42 @@ use tauri::{
 
 use std::thread;
 use std::time::Duration;
-use sysinfo::{System};
+use sysinfo::{System,ProcessesToUpdate};
 
+// System Process ke liye ye function banaya hai
+#[tauri::command]
+fn get_processes() -> Vec<(u32, String, f32, u64)> {
+    let mut sys = System::new_all();
+    
+    // Step 1: Pehla refresh
+    sys.refresh_processes(ProcessesToUpdate::All, true);
+    
+    // Step 2: Chota gap zaroori hai CPU usage calculate karne ke liye
+    thread::sleep(Duration::from_millis(200));
+    
+    // Step 3: Doosra refresh
+    sys.refresh_processes(ProcessesToUpdate::All, true);
+
+    let mut process_list: Vec<(u32, String, f32, u64)> = sys.processes()
+        .values()
+        .map(|p| {
+            (
+                p.pid().as_u32(),
+                p.name().to_string_lossy().to_string(), // Name handling safely
+                p.cpu_usage(),
+                p.memory(), // RAM info bhi add kar di (Bytes mein)
+            )
+        })
+        .collect();
+
+    // Step 4: Sort by CPU (High to Low) taaki kaam ki apps upar aayein
+    process_list.sort_by(|a, b| b.2.partial_cmp(&a.2).unwrap_or(std::cmp::Ordering::Equal));
+
+    process_list
+}
+
+
+// System stats nikalne ke liye ye function banaya hai
 #[tauri::command]
 fn get_system_stats() -> (f32, u64, u64,String, String, String) {
     let mut sys = System::new_all();
@@ -51,7 +85,7 @@ pub fn run() {
 
 
         //  Yaha se Stats function ko frontend se call karne ke liye expose kar rahe hain
-        .invoke_handler(tauri::generate_handler![get_system_stats])
+        .invoke_handler(tauri::generate_handler![get_system_stats,get_processes])
 
         // Prevent from closing the window, hide it instead
         .on_window_event(|window, event| {

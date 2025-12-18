@@ -6,6 +6,7 @@ import Clipboard from "./components/Clipboard.jsx";
 import SystemInfo from "./components/SystemInfo.jsx";
 import AutostartToggle from "./components/AutostartToggle.jsx";
 import SystemMonitor from "./components/SystemMonitor.jsx";
+import ProcessList from "./components/ProcessList.jsx";
 
 function App() {
   const [content, setContent] = useState(""); // editor text
@@ -17,6 +18,9 @@ function App() {
     <div className="app-root">
       {/* System Monitor */}
       <SystemMonitor />
+
+      {/* System Processes */}
+      <ProcessList />
 
       {/* Autostart Toggle */}
       <AutostartToggle />
