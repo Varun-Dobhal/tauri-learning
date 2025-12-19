@@ -11,12 +11,13 @@ export default function SystemMonitor() {
     name: "",
     kernel: "",
     host: "",
+    uptime: 0,
   });
 
   const loadStats = async () => {
     try {
-      // Destructure 6 values from the tuple
-      const [cpu, used, total, name, kernel, host] = await invoke(
+      // Destructure 7 values from the tuple
+      const [cpu, used, total, name, kernel, host, uptime] = await invoke(
         "get_system_stats"
       );
       const GB = 1024 * 1024 * 1024;
@@ -28,6 +29,7 @@ export default function SystemMonitor() {
         cpu,
         usedRam: Number(used) / GB,
         totalRam: Number(total) / GB,
+        uptime: uptime / 86400, // convert seconds to days
         name,
         kernel,
         host,
@@ -75,6 +77,7 @@ export default function SystemMonitor() {
         <p>
           💾 RAM: {stats.usedRam.toFixed(2)} GB / {stats.totalRam.toFixed(2)} GB
         </p>
+        <p>⏱ Uptime: {stats.uptime.toFixed(2)} days</p>
       </div>
     </div>
   );

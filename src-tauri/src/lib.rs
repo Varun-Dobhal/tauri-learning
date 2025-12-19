@@ -6,6 +6,7 @@ use std::thread;
 use std::time::Duration;
 use sysinfo::{System,ProcessesToUpdate};
 
+
 // System Process ke liye ye function banaya hai
 #[tauri::command]
 fn get_processes() -> Vec<(u32, String, f32, u64)> {
@@ -41,7 +42,7 @@ fn get_processes() -> Vec<(u32, String, f32, u64)> {
 
 // System stats nikalne ke liye ye function banaya hai
 #[tauri::command]
-fn get_system_stats() -> (f32, u64, u64,String, String, String) {
+fn get_system_stats() -> (f32, u64, u64, String, String, String, u64) {
     let mut sys = System::new_all();
 
     // CPU usage nikalne ke liye ye 3 steps follow karne hote hain: cpu ka status do points par lena padta hai.
@@ -58,12 +59,13 @@ fn get_system_stats() -> (f32, u64, u64,String, String, String) {
     let cpu_usage = sys.global_cpu_usage();
     let used_memory = sys.used_memory();
     let total_memory = sys.total_memory();
+    let uptime = sysinfo::System::uptime();
 
     let sys_name = System::name().unwrap_or_else(|| "Unknown".to_string());
     let kernel_ver = System::kernel_version().unwrap_or_else(|| "Unknown".to_string());
     let host_name = System::host_name().unwrap_or_else(|| "Unknown".to_string());
 
-    (cpu_usage, used_memory, total_memory,sys_name, kernel_ver, host_name)
+    (cpu_usage, used_memory, total_memory,sys_name, kernel_ver, host_name,uptime)
     
 }
 
