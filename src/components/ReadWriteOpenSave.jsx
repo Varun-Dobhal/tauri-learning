@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { open, save } from "@tauri-apps/plugin-dialog";
 import { readTextFile, writeTextFile } from "@tauri-apps/plugin-fs";
+import { invoke } from "@tauri-apps/api/core";
 
 export default function ReadWriteOpenSave({
   content,
@@ -59,6 +60,7 @@ export default function ReadWriteOpenSave({
       setContent(data);
       setUnsaved(false);
       setStatus(`Opened: ${path}`);
+      await invoke("set_open_file", { path });
     } catch (err) {
       console.error("Error in handleOpenFile:", err);
       setStatus("Error opening file");
@@ -89,6 +91,7 @@ export default function ReadWriteOpenSave({
       await writeTextFile(path, content);
       setUnsaved(false);
       setStatus(`Saved: ${path}`);
+      await invoke("mark_saved");
       alert("File saved successfully!");
     } catch (err) {
       console.error("Error in handleSaveFile:", err);

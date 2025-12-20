@@ -27,7 +27,7 @@ export default function ProcessList() {
       className="app-card"
       style={{ padding: "15px", background: "#1e1e1e", borderRadius: "10px" }}
     >
-      <h3 style={{ color: "#fff" }}>🔥 Top Processes</h3>
+      <h3 style={{ color: "#fff" }}>Top Processes</h3>
       {loading ? (
         <p>Analyzing tasks...</p>
       ) : (

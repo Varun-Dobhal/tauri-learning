@@ -6,6 +6,43 @@ use std::thread;
 use std::time::Duration;
 use sysinfo::{System,ProcessesToUpdate};
 
+use std::sync::Mutex;
+use tauri::State;
+use tauri::Emitter;
+
+// Editor state ko manage karne ke liye struct banaya hai
+struct EditorState {
+    current_file: Mutex<Option<String>>,
+    is_dirty: Mutex<bool>,
+    force_close: Mutex<bool>,
+}
+
+#[tauri::command]
+fn set_open_file(path: String, state: State<EditorState>) {
+    *state.current_file.lock().unwrap() = Some(path);
+    *state.is_dirty.lock().unwrap() = false;
+}
+
+#[tauri::command]
+fn mark_saved(state: State<EditorState>) {
+    *state.is_dirty.lock().unwrap() = false;
+}
+
+#[tauri::command]
+fn mark_dirty(state: State<EditorState>) {
+    *state.is_dirty.lock().unwrap() = true;
+}
+
+#[tauri::command]
+fn can_close(state: State<EditorState>) -> bool {
+    let dirty = *state.is_dirty.lock().unwrap();
+    !dirty
+}
+
+#[tauri::command]
+fn allow_force_close(state: State<EditorState>) {
+    *state.force_close.lock().unwrap() = true;
+}
 
 // System Process ke liye ye function banaya hai
 #[tauri::command]
@@ -86,34 +123,51 @@ pub fn run() {
                 ))
 
 
+        //  STATE register kar rahe hain
+        .manage(EditorState {
+            current_file: Mutex::new(None),
+            is_dirty: Mutex::new(false),
+            force_close: Mutex::new(false),
+        })
+      
         //  Yaha se Stats function ko frontend se call karne ke liye expose kar rahe hain
-        .invoke_handler(tauri::generate_handler![get_system_stats,get_processes])
+        .invoke_handler(tauri::generate_handler![get_system_stats,get_processes,set_open_file,
+            mark_dirty,
+            mark_saved,
+            can_close,allow_force_close])
 
         // Prevent from closing the window, hide it instead
+        // Without save, prevent app from closing
         .on_window_event(|window, event| {
             if let tauri::WindowEvent::CloseRequested { api, .. } = event {
-              
-                // prevent close
-                api.prevent_close(); 
-                
-                // window hide
-                let _ = window.hide(); 
+                let state = window.state::<EditorState>();
+
+                let dirty = *state.is_dirty.lock().unwrap();
+                let force_close = *state.force_close.lock().unwrap();
+
+                if dirty && !force_close {
+                    api.prevent_close();
+                    let _ = window.emit("confirm-close", ());
+                }
             }
         })
-        
+
+
+
+
         //  SETUP (Tray icon and menu)
         .setup(|app| {
             let handle = app.handle();
 
  
-            // ---- Tray menu items ----
+            // Tray menu items
             let show = MenuItemBuilder::with_id("show", "Show").build(handle)?;
             let hide = MenuItemBuilder::with_id("hide", "Hide").build(handle)?;
             let quit = MenuItemBuilder::with_id("quit", "Quit").build(handle)?;
 
             let tray_menu = Menu::with_items(handle, &[&show, &hide, &quit])?;
 
-            // ---- Tray icon ----
+            // Tray icon
             TrayIconBuilder::new()
                 .icon(app.default_window_icon().unwrap().clone())
                 .menu(&tray_menu)
