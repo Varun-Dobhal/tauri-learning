@@ -47,6 +47,9 @@
     "core:app:allow-version",
     "autostart:allow-enable",
     "autostart:allow-disable",
-    "autostart:allow-is-enabled"
+    "autostart:allow-is-enabled",
+    "sql:default",
+    "sql:allow-execute",
+    "sql:allow-load"
   ]
 }
