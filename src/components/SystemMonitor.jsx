@@ -9,7 +9,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { listen } from "@tauri-apps/api/event";
-import { cpuAlert } from "../utils.js";
+import { cpuAlert, saveSetting, getSetting } from "../utils.js";
 import Database from "@tauri-apps/plugin-sql";
 
 // Database Logic
@@ -33,6 +33,7 @@ const fetchHistory = async () => {
 export default function SystemMonitor() {
   const alerted = useRef(false);
   const [history, setHistory] = useState([]);
+  const [themeColor, setThemeColor] = useState("#4caf50");
   const [stats, setStats] = useState({
     cpu: 0,
     usedRam: 0,
@@ -79,6 +80,46 @@ export default function SystemMonitor() {
       setHistory(data);
     }, 2000);
     return () => clearInterval(interval);
+  }, []);
+
+  // Changing Theme
+  // COLOR BADALNE KA FUNCTION
+  useEffect(() => {
+    const setupListener = async () => {
+      const unlisten = await listen("theme-updated", (event) => {
+        setThemeColor(event.payload); // Settings window se color leke state update
+      });
+      return unlisten;
+    };
+
+    let unlistenFn;
+    setupListener().then((fn) => (unlistenFn = fn));
+
+    return () => {
+      if (unlistenFn) unlistenFn();
+    };
+  }, []);
+
+  const changeColor = async (newColor) => {
+    setThemeColor(newColor); // Turant screen update
+    await saveSetting("color", newColor); // Future ke liye save
+  };
+  // Load saved theme
+  useEffect(() => {
+    const loadSavedSettings = async () => {
+      try {
+        // getSetting hamara vahi function hai jo LazyStore use karta hai
+        const savedColor = await getSetting("color");
+
+        if (savedColor) {
+          setThemeColor(savedColor); // Agar file mein blue tha, toh state blue ho jayegi
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    loadSavedSettings();
   }, []);
 
   return (
@@ -218,13 +259,42 @@ export default function SystemMonitor() {
               <Line
                 type="monotone"
                 dataKey="usage"
-                stroke="#4caf50"
+                stroke={themeColor}
                 strokeWidth={2}
                 dot={false}
                 isAnimationActive={false}
               />
             </LineChart>
           </ResponsiveContainer>
+        </div>
+        {/* 4. SETTINGS CONTROLS (Buttons) */}
+        <div style={{ marginTop: "15px", display: "flex", gap: "10px" }}>
+          <button
+            onClick={() => changeColor("#2196f3")}
+            style={{
+              backgroundColor: "#2196f3",
+              color: "white",
+              border: "none",
+              padding: "5px 10px",
+              borderRadius: "4px",
+              cursor: "pointer",
+            }}
+          >
+            Blue Theme
+          </button>
+          <button
+            onClick={() => changeColor("#4caf50")}
+            style={{
+              backgroundColor: "#4caf50",
+              color: "white",
+              border: "none",
+              padding: "5px 10px",
+              borderRadius: "4px",
+              cursor: "pointer",
+            }}
+          >
+            Green Theme
+          </button>
         </div>
       </div>
     </div>

@@ -1,60 +1,46 @@
-import { useState } from "react";
-import Notifications from "./components/Notifications.jsx";
-import ReadWriteOpenSave from "./components/ReadWriteOpenSave.jsx";
-import TitleBar from "./components/TitleBar.jsx";
-import Clipboard from "./components/Clipboard.jsx";
-import SystemInfo from "./components/SystemInfo.jsx";
-import AutostartToggle from "./components/AutostartToggle.jsx";
+import { invoke } from "@tauri-apps/api/core"; // Tauri v2 mein 'core' use hota hai
 import SystemMonitor from "./components/SystemMonitor.jsx";
 import ProcessList from "./components/ProcessList.jsx";
+import TitleBar from "./components/TitleBar.jsx";
+import SystemInfo from "./components/SystemInfo.jsx";
+import AutostartToggle from "./components/AutostartToggle.jsx";
+import Notifications from "./components/Notifications.jsx";
 
-function App() {
-  const [content, setContent] = useState(""); // editor text
-  const [filePath, setFilePath] = useState(""); // current file path
-  const [unsaved, setUnsaved] = useState(false); // unsaved flag
-  const [status, setStatus] = useState("Ready"); // small status message
+export default function App() {
+  const openSettings = async () => {
+    try {
+      console.log("Rust command calling...");
+      await invoke("open_settings_window");
+    } catch (error) {
+      console.error("Window open error:", error);
+    }
+  };
 
   return (
-    <div className="app-root">
-      {/* System Monitor */}
-      <SystemMonitor />
-
-      {/* System Processes */}
-      <ProcessList />
-
-      {/* Autostart Toggle */}
-      <AutostartToggle />
-
-      {/* Title Bar */}
+    <div className="app-root" style={{ padding: "20px" }}>
       <TitleBar title="Tauri App Learning" />
 
-      {/* System Info */}
+      <button
+        onClick={openSettings}
+        style={{
+          margin: "15px 0",
+          padding: "10px 20px",
+          background: "#4caf50",
+          color: "white",
+          border: "none",
+          borderRadius: "8px",
+          cursor: "pointer",
+          fontWeight: "bold",
+        }}
+      >
+        ⚙️ Settings Window
+      </button>
+
+      <SystemMonitor />
+      <ProcessList />
+      <AutostartToggle />
       <SystemInfo />
-
-      {/* Read, Write, Save And Open */}
-      <ReadWriteOpenSave
-        content={content}
-        setContent={setContent}
-        filePath={filePath}
-        setFilePath={setFilePath}
-        setUnsaved={setUnsaved}
-        setStatus={setStatus}
-      />
-
-      {/* Clipboard + main editor */}
-      <Clipboard
-        content={content}
-        setContent={setContent}
-        unsaved={unsaved}
-        setUnsaved={setUnsaved}
-        status={status}
-        setStatus={setStatus}
-      />
-
-      {/* Notification (as is) */}
       <Notifications />
     </div>
   );
 }
-
-export default App;

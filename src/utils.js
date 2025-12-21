@@ -3,6 +3,7 @@ import {
   isPermissionGranted,
   requestPermission,
 } from "@tauri-apps/plugin-notification";
+import { LazyStore } from "@tauri-apps/plugin-store";
 
 // "cpuAlert" export kar rahe hain
 export const cpuAlert = async (cpu, alerted) => {
@@ -22,4 +23,18 @@ export const cpuAlert = async (cpu, alerted) => {
   } else if (cpu < 5) {
     alerted.current = false;
   }
+};
+
+// user ki "Preferred Theme Color"
+// 1. Store file create/load karo (Ye settings.json naam ki file bana dega)
+const store = new LazyStore("settings.json");
+
+export const saveSetting = async (key, value) => {
+  await store.set(key, value);
+  await store.save(); // Ye file likhta hai
+};
+
+export const getSetting = async (key) => {
+  const val = await store.get(key);
+  return val;
 };
