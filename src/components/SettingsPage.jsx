@@ -1,5 +1,6 @@
 import { emit } from "@tauri-apps/api/event";
 import { saveSetting } from "../utils.js";
+import TitleBar from "./TitleBar.jsx";
 
 export default function SettingsPage() {
   const updateTheme = async (color) => {
@@ -16,7 +17,14 @@ export default function SettingsPage() {
         color: "white",
       }}
     >
-      <h2>⚙️ System Settings</h2>
+      <TitleBar title="System Settings" />
+      <h2
+        style={{
+          marginTop: "50px",
+        }}
+      >
+        System Settings
+      </h2>
       <hr style={{ borderColor: "#333" }} />
       <div style={{ display: "flex", gap: "10px", marginTop: "20px" }}>
         <button

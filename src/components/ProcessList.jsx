@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
+import TitleBar from "./TitleBar";
 
 export default function ProcessList() {
   const [list, setList] = useState([]);
@@ -27,6 +28,7 @@ export default function ProcessList() {
         width: "100%",
         maxWidth: "450px", // SystemMonitor se match karne ke liye
         margin: "20px auto", // Screen ke center mein lane ke liye
+        marginTop: "50px",
         backgroundColor: "#181717",
         borderRadius: "12px",
         padding: "20px",
@@ -34,6 +36,8 @@ export default function ProcessList() {
         boxShadow: "0 4px 15px rgba(0,0,0,0.5)",
       }}
     >
+      <TitleBar title="Process List" />
+
       <div
         style={{
           display: "flex",
@@ -42,7 +46,7 @@ export default function ProcessList() {
           marginBottom: "15px",
         }}
       >
-        <h3 style={{ color: "#4caf50", margin: 0 }}>🔥 Top Processes</h3>
+        <h3 style={{ color: "#4caf50", margin: 0 }}>Top Processes</h3>
         <span style={{ fontSize: "12px", color: "#666" }}>
           Auto-refresh: 5s
         </span>

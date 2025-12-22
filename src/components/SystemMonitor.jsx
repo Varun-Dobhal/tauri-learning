@@ -1,39 +1,10 @@
 import { useEffect, useState, useRef } from "react";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
 import { listen } from "@tauri-apps/api/event";
-import { cpuAlert, saveSetting, getSetting } from "../utils.js";
-import Database from "@tauri-apps/plugin-sql";
-
-// Database Logic
-const saveToDb = async (cpuValue) => {
-  const db = await Database.load("sqlite:stats.db");
-  await db.execute(
-    "CREATE TABLE IF NOT EXISTS logs (id INTEGER PRIMARY KEY AUTOINCREMENT, cpu REAL, time DATETIME DEFAULT CURRENT_TIMESTAMP)"
-  );
-  await db.execute("INSERT INTO logs (cpu) VALUES ($1)", [cpuValue]);
-  console.log("Data Saved in SQLite!");
-};
-
-const fetchHistory = async () => {
-  const db = await Database.load("sqlite:stats.db");
-  const result = await db.select(
-    "SELECT cpu as usage, time FROM logs ORDER BY id DESC LIMIT 20"
-  );
-  return result.reverse();
-};
+import { cpuAlert, saveToDb } from "../utils.js";
 
 export default function SystemMonitor() {
   const alerted = useRef(false);
-  const [history, setHistory] = useState([]);
-  const [themeColor, setThemeColor] = useState("#4caf50");
+
   const [stats, setStats] = useState({
     cpu: 0,
     usedRam: 0,
@@ -73,55 +44,6 @@ export default function SystemMonitor() {
     };
   }, []);
 
-  // 2. Polling for Database History
-  useEffect(() => {
-    const interval = setInterval(async () => {
-      const data = await fetchHistory();
-      setHistory(data);
-    }, 2000);
-    return () => clearInterval(interval);
-  }, []);
-
-  // Changing Theme
-  // COLOR BADALNE KA FUNCTION
-  useEffect(() => {
-    const setupListener = async () => {
-      const unlisten = await listen("theme-updated", (event) => {
-        setThemeColor(event.payload); // Settings window se color leke state update
-      });
-      return unlisten;
-    };
-
-    let unlistenFn;
-    setupListener().then((fn) => (unlistenFn = fn));
-
-    return () => {
-      if (unlistenFn) unlistenFn();
-    };
-  }, []);
-
-  const changeColor = async (newColor) => {
-    setThemeColor(newColor); // Turant screen update
-    await saveSetting("color", newColor); // Future ke liye save
-  };
-  // Load saved theme
-  useEffect(() => {
-    const loadSavedSettings = async () => {
-      try {
-        // getSetting hamara vahi function hai jo LazyStore use karta hai
-        const savedColor = await getSetting("color");
-
-        if (savedColor) {
-          setThemeColor(savedColor); // Agar file mein blue tha, toh state blue ho jayegi
-        }
-      } catch (err) {
-        console.error(err);
-      }
-    };
-
-    loadSavedSettings();
-  }, []);
-
   return (
     <div
       style={{
@@ -142,10 +64,11 @@ export default function SystemMonitor() {
           borderRadius: "12px",
           color: "white",
           margin: "0 auto",
+          marginTop: "20px",
         }}
       >
         <h2 style={{ color: "#4caf50", margin: "0 0 10px 0" }}>
-          💻 System Dashboard
+          System Dashboard
         </h2>
         <hr style={{ border: "0.5px solid #333", marginBottom: "20px" }} />
 
@@ -170,9 +93,7 @@ export default function SystemMonitor() {
           style={{ background: "#222", padding: "15px", borderRadius: "8px" }}
         >
           <div style={{ marginBottom: "15px" }}>
-            <p style={{ margin: "0 0 5px 0" }}>
-              🧠 CPU: {stats.cpu.toFixed(1)}%
-            </p>
+            <p style={{ margin: "0 0 5px 0" }}>CPU: {stats.cpu.toFixed(1)}%</p>
             <div
               style={{
                 width: "100%",
@@ -195,8 +116,7 @@ export default function SystemMonitor() {
 
           <div>
             <p style={{ margin: "0 0 5px 0" }}>
-              💾 RAM: {stats.usedRam.toFixed(2)} / {stats.totalRam.toFixed(2)}{" "}
-              GB
+              RAM: {stats.usedRam.toFixed(2)} / {stats.totalRam.toFixed(2)} GB
             </p>
             <div
               style={{
@@ -217,84 +137,6 @@ export default function SystemMonitor() {
               />
             </div>
           </div>
-        </div>
-      </div>
-
-      {/* Graph Card */}
-      <div
-        style={{
-          width: "100%",
-          maxWidth: "450px",
-          margin: "0 auto",
-          padding: "20px",
-          backgroundColor: "#181717",
-          borderRadius: "12px",
-          color: "white",
-        }}
-      >
-        <h2 style={{ fontSize: "18px", marginBottom: "15px" }}>
-          📈 CPU Usage History
-        </h2>
-        <div
-          style={{
-            width: "100%",
-            height: 200,
-            backgroundColor: "#222",
-            padding: "10px",
-            borderRadius: "10px",
-          }}
-        >
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={history}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#444" />
-              <XAxis dataKey="time" hide />
-              <YAxis domain={[0, 100]} stroke="#888" />
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: "#333",
-                  border: "none",
-                  color: "white",
-                }}
-              />
-              <Line
-                type="monotone"
-                dataKey="usage"
-                stroke={themeColor}
-                strokeWidth={2}
-                dot={false}
-                isAnimationActive={false}
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-        {/* 4. SETTINGS CONTROLS (Buttons) */}
-        <div style={{ marginTop: "15px", display: "flex", gap: "10px" }}>
-          <button
-            onClick={() => changeColor("#2196f3")}
-            style={{
-              backgroundColor: "#2196f3",
-              color: "white",
-              border: "none",
-              padding: "5px 10px",
-              borderRadius: "4px",
-              cursor: "pointer",
-            }}
-          >
-            Blue Theme
-          </button>
-          <button
-            onClick={() => changeColor("#4caf50")}
-            style={{
-              backgroundColor: "#4caf50",
-              color: "white",
-              border: "none",
-              padding: "5px 10px",
-              borderRadius: "4px",
-              cursor: "pointer",
-            }}
-          >
-            Green Theme
-          </button>
         </div>
       </div>
     </div>

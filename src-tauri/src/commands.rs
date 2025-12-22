@@ -2,6 +2,79 @@ use crate::state::{EditorState};
 use tauri::State;
 use sysinfo::{System, ProcessesToUpdate};
 use std::{thread, time::Duration};
+use tauri::Manager; // Zaruri import window handle karne ke liye
+
+
+// Naya command window kholne ke liye (Rust Side)
+#[tauri::command]
+pub async fn open_settings_window(handle: tauri::AppHandle) {
+    // 1. Pehle check karo kya "settings" naam ki window pehle se hai?
+    if let Some(window) = handle.get_webview_window("settings") {
+        // 2. Agar hai, toh use "un-hide" karo aur focus mein lao
+        window.show().unwrap();
+        window.unminimize().unwrap();
+        window.set_focus().unwrap();
+    } else {
+        // 3. Agar nahi hai, toh hi nayi window banao
+        let _ = tauri::WebviewWindowBuilder::new(
+            &handle,
+            "settings",
+            tauri::WebviewUrl::App("/settings".into())
+        )
+        .title("System Settings")
+        .inner_size(450.0, 550.0)
+        .resizable(false)
+        .always_on_top(true)
+        .decorations(false)
+        .build();
+    }
+}
+
+// CpuGraph ke liye new window
+#[tauri::command]
+pub async fn open_cpu_graph_window(handle: tauri::AppHandle) {
+    // 1. Pehle check karo kya "settings" naam ki window pehle se hai?
+    if let Some(window) = handle.get_webview_window("cpu-graph") {
+        // 2. Agar hai, toh use "un-hide" karo aur focus mein lao
+        window.show().unwrap();
+        window.unminimize().unwrap();
+        window.set_focus().unwrap();
+    } else {
+        let _ = tauri::WebviewWindowBuilder::new(
+            &handle,
+            "cpu-graph",
+            tauri::WebviewUrl::App("/cpu-graph".into())
+        )
+        .title("CPU Usage Graph")
+        .inner_size(600.0, 500.0)
+        .resizable(true)
+        .decorations(false)
+        .build();
+    }
+}
+
+// Process List ke liye command
+#[tauri::command]
+pub async fn open_process_list_window(handle: tauri::AppHandle) {
+    // 1. Pehle check karo kya "process-list" naam ki window pehle se hai?
+    if let Some(window) = handle.get_webview_window("process-list") {
+        // 2. Agar hai, toh use "un-hide" karo aur focus mein lao
+        window.show().unwrap();
+        window.unminimize().unwrap();
+        window.set_focus().unwrap();
+    } else {
+        let _ = tauri::WebviewWindowBuilder::new(
+            &handle,
+            "process-list",
+            tauri::WebviewUrl::App("/process".into())
+        )
+        .title("Process List")
+        .inner_size(800.0, 600.0)
+        .resizable(true)
+        .decorations(false)
+        .build();
+    }
+}
 
 #[tauri::command]
 pub fn get_processes() -> Vec<(u32, String, f32, u64)> {

@@ -2,33 +2,8 @@ mod state;
 mod commands;
 mod monitor;
 mod setup;
-
 use std::sync::Mutex;
-use tauri::Manager; // Zaruri import window handle karne ke liye
 
-// Naya command window kholne ke liye (Rust Side)
-#[tauri::command]
-async fn open_settings_window(handle: tauri::AppHandle) {
-    // 1. Pehle check karo kya "settings" naam ki window pehle se hai?
-    if let Some(window) = handle.get_webview_window("settings") {
-        // 2. Agar hai, toh use "un-hide" karo aur focus mein lao
-        window.show().unwrap();
-        window.unminimize().unwrap();
-        window.set_focus().unwrap();
-    } else {
-        // 3. Agar nahi hai, toh hi nayi window banao
-        let _ = tauri::WebviewWindowBuilder::new(
-            &handle,
-            "settings",
-            tauri::WebviewUrl::App("/settings".into())
-        )
-        .title("⚙️ System Settings")
-        .inner_size(450.0, 550.0)
-        .resizable(false)
-        .always_on_top(true)
-        .build();
-    }
-}
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -54,7 +29,9 @@ pub fn run() {
 
         // Commands (Ab ek hi jagah se)
         .invoke_handler(tauri::generate_handler![
-            open_settings_window, // <--- Naya command yahan add kiya hai
+            commands::open_process_list_window,
+            commands::open_cpu_graph_window,
+            commands::open_settings_window, 
             commands::get_processes,
             commands::set_open_file,
             commands::mark_dirty,
