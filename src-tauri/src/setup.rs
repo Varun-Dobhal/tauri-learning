@@ -1,4 +1,4 @@
-use tauri::{App, Manager, menu::{Menu, MenuItemBuilder}, tray::TrayIconBuilder,WebviewWindowBuilder};
+use tauri::{App, Manager, menu::{Menu, MenuItemBuilder}, tray::TrayIconBuilder};
 use crate::monitor;
 
 pub fn init(app: &mut App) -> Result<(), Box<dyn std::error::Error>> {

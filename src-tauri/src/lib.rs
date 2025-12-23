@@ -29,6 +29,7 @@ pub fn run() {
 
         // Commands (Ab ek hi jagah se)
         .invoke_handler(tauri::generate_handler![
+            commands::close_splashscreen,
             commands::open_process_list_window,
             commands::open_cpu_graph_window,
             commands::open_settings_window, 

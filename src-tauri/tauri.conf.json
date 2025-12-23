@@ -12,12 +12,24 @@
   "app": {
     "windows": [
       {
-        "title": "Editor",
+        "label": "main",
+        "title": "System Monitor",
         "width": 800,
         "height": 600,
+        "visible": false,
         "resizable": true,
-        "fullscreen": false,
         "decorations": false
+      },
+      {
+        "label": "splashscreen",
+        "url": "/splashscreen.html",
+        "width": 400,
+        "height": 300,
+        "decorations": false,
+        "center": true,
+        "alwaysOnTop": true,
+        "transparent": true,
+        "backgroundColor": "#0f0f0f"
       }
     ],
     "security": {

@@ -2,7 +2,7 @@ use crate::state::{EditorState};
 use tauri::State;
 use sysinfo::{System, ProcessesToUpdate};
 use std::{thread, time::Duration};
-use tauri::Manager; // Zaruri import window handle karne ke liye
+use tauri::{Manager,Runtime}; // Zaruri import window handle karne ke liye
 
 
 // Naya command window kholne ke liye (Rust Side)
@@ -111,4 +111,19 @@ pub fn mark_dirty(state: State<EditorState>) {
 #[tauri::command]
 pub fn allow_force_close(state: State<EditorState>) {
     *state.force_close.lock().unwrap() = true;
+}
+
+// Splash screen ke liye command
+#[tauri::command]
+pub async fn close_splashscreen(app: tauri::AppHandle) {
+    // 1. Splash window ko pakdo
+    if let Some(splash_window) = app.get_webview_window("splashscreen") {
+        splash_window.close().unwrap();
+    }
+    // 2. Main window ko dikhao
+    if let Some(main_window) = app.get_webview_window("main") {
+        main_window.show().unwrap();
+        main_window.unminimize().unwrap();
+        main_window.set_focus().unwrap();
+    }
 }

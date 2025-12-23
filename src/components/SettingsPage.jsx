@@ -9,63 +9,65 @@ export default function SettingsPage() {
   };
 
   return (
-    <div
-      style={{
-        padding: "20px",
-        background: "#181717",
-        height: "100vh",
-        color: "white",
-      }}
-    >
+    <div>
       <TitleBar title="System Settings" />
-      <h2
+      <div
         style={{
-          marginTop: "50px",
+          padding: "20px",
+          background: "#181717",
+          height: "100vh",
+          color: "white",
         }}
       >
-        System Settings
-      </h2>
-      <hr style={{ borderColor: "#333" }} />
-      <div style={{ display: "flex", gap: "10px", marginTop: "20px" }}>
-        <button
-          onClick={() => updateTheme("#2196f3")}
+        <h2
           style={{
-            background: "#2196f3",
-            color: "white",
-            padding: "10px",
-            borderRadius: "5px",
-            cursor: "pointer",
-            border: "none",
+            marginTop: "50px",
           }}
         >
-          Blue
-        </button>
-        <button
-          onClick={() => updateTheme("#4caf50")}
-          style={{
-            background: "#4caf50",
-            color: "white",
-            padding: "10px",
-            borderRadius: "5px",
-            cursor: "pointer",
-            border: "none",
-          }}
-        >
-          Green
-        </button>
-        <button
-          onClick={() => updateTheme("#f44336")}
-          style={{
-            background: "#f44336",
-            color: "white",
-            padding: "10px",
-            borderRadius: "5px",
-            cursor: "pointer",
-            border: "none",
-          }}
-        >
-          Red
-        </button>
+          System Settings
+        </h2>
+        <hr style={{ borderColor: "#333" }} />
+        <div style={{ display: "flex", gap: "10px", marginTop: "20px" }}>
+          <button
+            onClick={() => updateTheme("#2196f3")}
+            style={{
+              background: "#2196f3",
+              color: "white",
+              padding: "10px",
+              borderRadius: "5px",
+              cursor: "pointer",
+              border: "none",
+            }}
+          >
+            Blue
+          </button>
+          <button
+            onClick={() => updateTheme("#4caf50")}
+            style={{
+              background: "#4caf50",
+              color: "white",
+              padding: "10px",
+              borderRadius: "5px",
+              cursor: "pointer",
+              border: "none",
+            }}
+          >
+            Green
+          </button>
+          <button
+            onClick={() => updateTheme("#f44336")}
+            style={{
+              background: "#f44336",
+              color: "white",
+              padding: "10px",
+              borderRadius: "5px",
+              cursor: "pointer",
+              border: "none",
+            }}
+          >
+            Red
+          </button>
+        </div>
       </div>
     </div>
   );

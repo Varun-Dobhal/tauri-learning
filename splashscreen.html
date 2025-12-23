@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden; /* No scrollbars or white edges */
+        background: #0f0f0f; /* Pitch black */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: "Segoe UI", sans-serif;
+      }
+      .container {
+        text-align: center;
+      }
+      .logo-container {
+        position: relative;
+        width: 80px;
+        height: 80px;
+        margin-bottom: 20px;
+      }
+      .ring {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border: 4px solid transparent;
+        border-top: 4px solid #4caf50;
+        border-radius: 50%;
+        animation: spin 1s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite;
+      }
+      .pulse {
+        position: absolute;
+        width: 60px;
+        height: 60px;
+        background: rgba(76, 175, 80, 0.2);
+        border-radius: 50%;
+        top: 10px;
+        left: 10px;
+        animation: pulse 1.5s ease-out infinite;
+      }
+      @keyframes spin {
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+      @keyframes pulse {
+        0% {
+          transform: scale(0.5);
+          opacity: 1;
+        }
+        100% {
+          transform: scale(1.5);
+          opacity: 0;
+        }
+      }
+      h2 {
+        color: #fff;
+        letter-spacing: 2px;
+        font-weight: 300;
+        margin: 0;
+      }
+      p {
+        color: #4caf50;
+        font-size: 12px;
+        margin-top: 10px;
+        text-transform: uppercase;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="logo-container">
+        <div class="ring"></div>
+        <div class="pulse"></div>
+      </div>
+      <h2>SYSTEM MONITOR</h2>
+      <p>Loading Kernel...</p>
+    </div>
+  </body>
+</html>

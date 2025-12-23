@@ -1,167 +1,194 @@
-// Save and Quit wala feature
-// import { useEffect, useRef } from "react";
-// import { invoke } from "@tauri-apps/api/core";
-// import { listen } from "@tauri-apps/api/event";
-// import { getCurrentWindow } from "@tauri-apps/api/window";
-// import { writeText, readText } from "@tauri-apps/plugin-clipboard-manager";
-// import { ask } from "@tauri-apps/plugin-dialog";
-
-// export default function Clipboard({
-//   content,
-//   setContent,
-//   unsaved,
-//   setUnsaved,
-//   status,
-//   setStatus,
-// }) {
-//   const listenerRef = useRef(false);
-
-//   useEffect(() => {
-//     if (listenerRef.current) return;
-//     listenerRef.current = true;
-
-//     let unlisten;
-
-//     (async () => {
-//       unlisten = await listen("confirm-close", async () => {
-//         const shouldSave = await ask("Save and Quit?", {
-//           title: "Tauri Editor",
-//           kind: "warning",
-//           okLabel: "Yes, Save",
-//           cancelLabel: "No, Exit",
-//         });
-
-//         if (shouldSave) {
-//           await invoke("mark_saved");
-//         }
-
-//         await invoke("allow_force_close");
-
-//         // window.close()
-//         const win = getCurrentWindow();
-//         await win.close();
-//       });
-//     })();
-
-//     return () => {
-//       if (unlisten) unlisten();
-//       listenerRef.current = false;
-//     };
-//   }, []);
-
-//   // Clipboard logic same
-//   async function handleCopyToClipboard() {
-//     await writeText(content || "");
-//     setStatus("Copied to clipboard");
-//   }
-
-//   async function handlePasteFromClipboard() {
-//     const text = await readText();
-//     if (text != null) {
-//       setContent((p) => (p ? p + "\n" + text : text));
-//       setUnsaved(true);
-//       setStatus("Pasted");
-//       await invoke("mark_dirty");
-//     }
-//   }
-
-//   return (
-//     <div className="app-card">
-//       <h2>{unsaved ? "● Tauri Text Editor" : "Tauri Text Editor"}</h2>
-
-//       <button onClick={handleCopyToClipboard}>Copy</button>
-//       <button onClick={handlePasteFromClipboard}>Paste</button>
-
-//       <textarea
-//         className="hacker-editor"
-//         value={content}
-//         onChange={(e) => {
-//           setContent(e.target.value);
-//           setUnsaved(true);
-//           invoke("mark_dirty");
-//         }}
-//       />
-//     </div>
-//   );
-// }
-
-// Fillhal Save and Quit wala feature off kara he.
+import { useState } from "react";
 import { writeText, readText } from "@tauri-apps/plugin-clipboard-manager";
+import { open, save } from "@tauri-apps/plugin-dialog";
+import { readTextFile, writeTextFile } from "@tauri-apps/plugin-fs";
 
-export default function Clipboard({
-  content,
-  setContent,
-  unsaved,
-  setUnsaved,
-  status,
-  setStatus,
-}) {
-  async function handleCopyToClipboard() {
-    try {
-      await writeText(content || "");
-      setStatus("Copied to clipboard");
-    } catch (err) {
-      console.error("Copy error:", err);
-      setStatus("Failed to copy");
-    }
-  }
+export default function SmartEditor() {
+  const [content, setContent] = useState("");
+  const [status, setStatus] = useState("System Ready");
+  const [filePath, setFilePath] = useState(null);
+  const [isModified, setIsModified] = useState(false);
 
-  async function handlePasteFromClipboard() {
+  // Functions
+  const handleOpen = async () => {
     try {
-      const text = await readText();
-      if (text != null) {
-        setContent((prev) => (prev ? prev + "\n" + text : text));
-        setUnsaved(true);
-        setStatus("Pasted from clipboard");
+      const selected = await open({
+        multiple: false,
+        filters: [{ name: "Text", extensions: ["txt", "md", "log", "js"] }],
+      });
+      if (selected) {
+        const data = await readTextFile(selected);
+        setContent(data);
+        setFilePath(selected);
+        setIsModified(false);
+        setStatus("File Loaded");
       }
     } catch (err) {
-      console.error("Paste error:", err);
-      setStatus("Failed to paste");
+      setStatus("Error Opening");
     }
-  }
+  };
+
+  const handleSave = async () => {
+    try {
+      let path =
+        filePath ||
+        (await save({ filters: [{ name: "Text", extensions: ["txt"] }] }));
+      if (path) {
+        await writeTextFile(path, content);
+        setFilePath(path);
+        setIsModified(false);
+        setStatus("Saved");
+      }
+    } catch (err) {
+      setStatus("Error Saving");
+    }
+  };
+
+  const handleCopy = async () => {
+    await writeText(content);
+    setStatus("Copied");
+    setTimeout(() => setStatus("Ready"), 2000);
+  };
+
+  const handlePaste = async () => {
+    const text = await readText();
+    if (text) {
+      setContent((prev) => (prev ? prev + "\n" + text : text));
+      setIsModified(true);
+      setStatus("Pasted");
+    }
+  };
+
+  const containerStyle = {
+    width: "95%",
+    maxWidth: "850px",
+    background: "rgba(15, 23, 42, 0.8)",
+    backdropFilter: "blur(20px)",
+    borderRadius: "14px",
+    border: "1px solid rgba(255, 255, 255, 0.1)",
+    padding: "20px",
+    margin: "20px auto",
+    display: "flex",
+    flexDirection: "column",
+    boxShadow: "0 20px 50px rgba(0,0,0,0.6)",
+  };
+
+  const headerStyle = {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: "15px",
+    borderBottom: "1px solid rgba(255, 255, 255, 0.05)",
+    paddingBottom: "12px",
+  };
+
+  const toolbarStyle = { display: "flex", gap: "8px" };
+
+  const btnStyle = {
+    background: "rgba(255, 255, 255, 0.05)",
+    border: "1px solid rgba(255, 255, 255, 0.1)",
+    color: "#cbd5e1",
+    padding: "6px 14px",
+    borderRadius: "6px",
+    fontSize: "11px",
+    fontWeight: "600",
+    cursor: "pointer",
+    transition: "0.2s",
+    textTransform: "uppercase",
+  };
+
+  const textareaStyle = {
+    width: "100%",
+    minHeight: "400px",
+    background: "#020617",
+    color: "#00ff66",
+    fontFamily: "'JetBrains Mono', monospace",
+    fontSize: "14px",
+    lineHeight: "1.6",
+    padding: "20px",
+    border: "1px solid rgba(0, 255, 102, 0.2)",
+    borderRadius: "8px",
+    outline: "none",
+    resize: "none",
+    boxShadow: "inset 0 0 10px rgba(0,0,0,0.5)",
+  };
+
+  const footerStyle = {
+    display: "flex",
+    justifyContent: "space-between",
+    marginTop: "12px",
+    fontSize: "10px",
+    color: "#64748b",
+    fontFamily: "sans-serif",
+    letterSpacing: "0.5px",
+  };
 
   return (
-    <div className="app-card">
-      <h2 className="app-heading">
-        {unsaved ? "● Tauri Text Editor" : "Tauri Text Editor"}
-      </h2>
+    <div style={containerStyle}>
+      <div style={headerStyle}>
+        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <div
+            style={{
+              width: "8px",
+              height: "8px",
+              borderRadius: "50%",
+              background: isModified ? "#facc15" : "#00ff66",
+              boxShadow: isModified ? "0 0 10px #facc15" : "0 0 8px #00ff66",
+            }}
+          ></div>
+          <span
+            style={{ fontSize: "12px", color: "#94a3b8", fontWeight: "600" }}
+          >
+            {filePath ? filePath.split(/[\\/]/).pop() : "NEW_BUFFER.txt"}
+          </span>
+        </div>
 
-      <p className="app-text">
-        Simple text editor with file open/save (above) and clipboard actions.
-      </p>
-
-      {/* Top action buttons */}
-      <div style={{ display: "flex", gap: "8px", marginBottom: "12px" }}>
-        {/* File buttons yahan se hata diye – woh upar ReadWriteOpenSave handle karta hai */}
-        <button onClick={handleCopyToClipboard}>Copy</button>
-        <button onClick={handlePasteFromClipboard}>Paste</button>
+        <div style={toolbarStyle}>
+          <button
+            style={btnStyle}
+            onClick={handleOpen}
+            onMouseOver={(e) => (e.target.style.background = "#3b82f6")}
+            onMouseOut={(e) =>
+              (e.target.style.background = "rgba(255,255,255,0.05)")
+            }
+          >
+            Open
+          </button>
+          <button style={btnStyle} onClick={handleSave}>
+            Save
+          </button>
+          <div
+            style={{
+              width: "1px",
+              background: "rgba(255,255,255,0.1)",
+              margin: "0 4px",
+            }}
+          ></div>
+          <button style={btnStyle} onClick={handleCopy}>
+            Copy
+          </button>
+          <button style={btnStyle} onClick={handlePaste}>
+            Paste
+          </button>
+        </div>
       </div>
 
-      {/* Text editor */}
-      <div style={{ display: "flex", justifyContent: "center" }}>
-        <textarea
-          className="hacker-editor"
-          value={content}
-          onChange={(e) => {
-            setContent(e.target.value);
-            setUnsaved(true);
-          }}
-          spellCheck={false}
-        />
-      </div>
-
-      {/* Status bar */}
-      <div
-        style={{
-          marginTop: "12px",
-          display: "flex",
-          justifyContent: "space-between",
-          fontSize: "12px",
-          opacity: 0.8,
+      <textarea
+        style={textareaStyle}
+        value={content}
+        onChange={(e) => {
+          setContent(e.target.value);
+          setIsModified(true);
         }}
-      >
-        <span>{status}</span>
-        <span>{unsaved ? "Unsaved changes" : "All changes saved"}</span>
+        placeholder=">> Awaiting input..."
+        spellCheck={false}
+      />
+
+      <div style={footerStyle}>
+        <span>
+          STATUS: <b style={{ color: "#3b82f6" }}>{status.toUpperCase()}</b>
+        </span>
+        <span>MODIFIED: {isModified ? "TRUE" : "FALSE"}</span>
       </div>
     </div>
   );

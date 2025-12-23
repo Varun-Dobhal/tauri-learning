@@ -1,21 +1,42 @@
+import React, { useEffect } from "react";
+import { invoke } from "@tauri-apps/api/core";
 import SystemMonitor from "./components/SystemMonitor.jsx";
 import TitleBar from "./components/TitleBar.jsx";
 import SystemInfo from "./components/SystemInfo.jsx";
 import AutostartToggle from "./components/AutostartToggle.jsx";
 import Notifications from "./components/Notifications.jsx";
-import ReadWriteOpenSave from "./components/ReadWriteOpenSave.jsx";
 import Clipboard from "./components/Clipboard.jsx";
 
 export default function App() {
+  useEffect(() => {
+    const initApp = async () => {
+      try {
+        await invoke("close_splashscreen");
+      } catch (e) {
+        console.error("Failed to close splashscreen:", e);
+      }
+    };
+    initApp();
+  }, []);
+
   return (
-    <div className="app-root" style={{ padding: "20px" }}>
+    <div
+      style={{
+        height: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        overflow: "hidden",
+      }}
+    >
       <TitleBar title="Tauri App Learning" />
-      <SystemMonitor />
-      <AutostartToggle />
-      <ReadWriteOpenSave />
-      <Clipboard />
-      <SystemInfo />
-      <Notifications />
+
+      <div className="app-root">
+        <AutostartToggle />
+        <Notifications />
+        <SystemInfo />
+        <SystemMonitor />
+        <Clipboard />
+      </div>
     </div>
   );
 }

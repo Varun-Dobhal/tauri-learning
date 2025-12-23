@@ -5,14 +5,13 @@ export default function AutostartToggle() {
   const [isAutoStart, setIsAutoStart] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  // 1. App load hote hi status check karein
   useEffect(() => {
     async function checkStatus() {
       try {
         const status = await isEnabled();
         setIsAutoStart(status);
       } catch (err) {
-        console.error("Autostart status check failed:", err);
+        console.error("Autostart check failed:", err);
       } finally {
         setLoading(false);
       }
@@ -20,53 +19,134 @@ export default function AutostartToggle() {
     checkStatus();
   }, []);
 
-  // 2. Button click handle karne ke liye function
   const toggleAutostart = async () => {
+    const previousState = isAutoStart;
     try {
-      if (isAutoStart) {
-        await disable(); // Agar pehle se on hai toh off kar do
-        console.log("Autostart Disabled");
+      setIsAutoStart(!previousState); // Optimistic Update
+      if (!previousState) {
+        await enable();
       } else {
-        await enable(); // Agar off hai toh on kar do
-        console.log("Autostart Enabled");
+        await disable();
       }
-
-      // State update karein taki UI badal jaye
-      setIsAutoStart(!isAutoStart);
     } catch (err) {
-      alert("Error: Permissions missing or plugin not configured!");
-      console.error(err);
+      setIsAutoStart(previousState); // Revert on error
+      alert("System Permission Denied");
     }
   };
 
-  if (loading) return <p>Checking settings...</p>;
+  if (loading) return null;
 
   return (
-    <div
-      className="settings-card"
-      style={{ padding: "20px", border: "1px solid #ccc", borderRadius: "8px" }}
-    >
-      <h3>🚀 Startup Settings</h3>
-      <p>App will start automatically when you turn on your PC.</p>
+    <>
+      <style>{`
+        .autostart-card {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 16px;
+          background: rgba(255, 255, 255, 0.05);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 12px;
+          backdrop-filter: blur(10px);
+          max-width: 450px;
+          font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+          color: #ffffff;
+        }
 
-      <button
-        onClick={toggleAutostart}
+        .info-section {
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+        }
+
+        .info-section h4 {
+          margin: 0;
+          font-size: 15px;
+          font-weight: 600;
+          color: #f1f1f1;
+        }
+
+        .info-section p {
+          margin: 0;
+          font-size: 13px;
+          color: #9ca3af;
+        }
+
+        /* Modern Toggle Switch */
+        .switch {
+          position: relative;
+          display: inline-block;
+          width: 44px;
+          height: 22px;
+        }
+
+        .switch input {
+          opacity: 0;
+          width: 0;
+          height: 0;
+        }
+
+        .slider {
+          position: absolute;
+          cursor: pointer;
+          top: 0; left: 0; right: 0; bottom: 0;
+          background-color: #374151;
+          transition: .3s cubic-bezier(0.4, 0, 0.2, 1);
+          border-radius: 34px;
+        }
+
+        .slider:before {
+          position: absolute;
+          content: "";
+          height: 16px;
+          width: 16px;
+          left: 3px;
+          bottom: 3px;
+          background-color: white;
+          transition: .3s cubic-bezier(0.4, 0, 0.2, 1);
+          border-radius: 50%;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        input:checked + .slider {
+          background-color: #3b82f6; /* Modern Blue */
+        }
+
+        input:checked + .slider:before {
+          transform: translateX(22px);
+        }
+
+        .autostart-card:hover {
+          background: rgba(255, 255, 255, 0.08);
+          border-color: rgba(255, 255, 255, 0.2);
+        }
+      `}</style>
+
+      {/* --- Component UI --- */}
+      <div
         style={{
-          padding: "10px 20px",
-          backgroundColor: isAutoStart ? "#ff4d4d" : "#4CAF50",
-          color: "white",
-          border: "none",
-          borderRadius: "5px",
-          cursor: "pointer",
-          fontWeight: "bold",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          marginTop: "30px",
         }}
       >
-        {isAutoStart ? "Disable Autostart" : "Enable Autostart"}
-      </button>
+        <div className="autostart-card">
+          <div className="info-section">
+            <h4>🚀 Launch on Startup</h4>
+            <p>Start the app automatically when you log in.</p>
+          </div>
 
-      <p style={{ marginTop: "10px", fontSize: "14px" }}>
-        Current Status: <strong>{isAutoStart ? "ON" : "OFF"}</strong>
-      </p>
-    </div>
+          <label className="switch">
+            <input
+              type="checkbox"
+              checked={isAutoStart}
+              onChange={toggleAutostart}
+            />
+            <span className="slider"></span>
+          </label>
+        </div>
+      </div>
+    </>
   );
 }
