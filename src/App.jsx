@@ -51,7 +51,7 @@ export default function App() {
         overflow: "hidden",
       }}
     >
-      <TitleBar title="Tauri App Learning" />
+      <TitleBar title="System Monitor" />
 
       <div className="app-root">
         <AutostartToggle />
