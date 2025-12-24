@@ -2,7 +2,7 @@ use crate::state::{EditorState};
 use tauri::State;
 use sysinfo::{System, ProcessesToUpdate};
 use std::{thread, time::Duration};
-use tauri::{Manager,Runtime}; // Zaruri import window handle karne ke liye
+use tauri::{Manager}; // Zaruri import window handle karne ke liye
 
 
 // Naya command window kholne ke liye (Rust Side)
