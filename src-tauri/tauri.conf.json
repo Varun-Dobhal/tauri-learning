@@ -1,7 +1,7 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
   "productName": "tauri-learning",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "identifier": "com.varun.systemmonitor",
   "build": {
     "frontendDist": "../dist",
@@ -42,7 +42,8 @@
       "endpoints": [
         "https://github.com/Varun-Dobhal/tauri-learning/releases/latest/download/latest.json"
       ],
-      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDE4NkM1Mzg2NDM3RkZGRjQKUldUMC8zOURobE5zR0RvNFJhQW80NEJaZFVZS2VwUW5pVHdPdTM1dSt3NzArOVVLYnJnN3lXN1EK"
+      "dialog": true,
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEQ0RDIzNkQzMjlGNDQ2MzkKUldRNVJ2UXAwemJTMUxxWFRLYnNzZGM0M0JJU1ZQOXdDUjJqUHpYTEUxbzFpaUxWN3RGQjJmVzYK"
     }
   },
   "bundle": {
