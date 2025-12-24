@@ -58,6 +58,8 @@
     "store:allow-set",
     "store:allow-save",
     "store:allow-load",
-    "shell:default"
+    "shell:default",
+    "process:allow-restart",
+    "updater:default"
   ]
 }

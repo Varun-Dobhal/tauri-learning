@@ -36,6 +36,15 @@
       "csp": null
     }
   },
+  "plugins": {
+    "updater": {
+      "active": true,
+      "endpoints": [
+        "https://github.com/Varun-Dobhal/tauri-learning/releases/latest/download/latest.json"
+      ],
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDRGMTczQThBNzVDNzcyQTgKUldTb2NzZDFpam9YVDAvUXFITEVwWklpQXArZVZrTFZHL2VPcVdKb2dnK0NJMmdiZHJianJONk4K"
+    }
+  },
   "bundle": {
     "active": true,
     "targets": "all",

@@ -1,4 +1,6 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
+import { check } from "@tauri-apps/plugin-updater";
+import { relaunch } from "@tauri-apps/plugin-process";
 import { invoke } from "@tauri-apps/api/core";
 import SystemMonitor from "./components/SystemMonitor.jsx";
 import TitleBar from "./components/TitleBar.jsx";
@@ -8,6 +10,27 @@ import Notifications from "./components/Notifications.jsx";
 import Clipboard from "./components/Clipboard.jsx";
 
 export default function App() {
+  // Auto update check
+  useEffect(() => {
+    // Update check karne wala function
+    const checkForUpdates = async () => {
+      try {
+        const update = await check();
+        if (update?.available) {
+          // Seedha download aur install (Bina user ko pareshan kiye background mein)
+          await update.downloadAndInstall();
+
+          // App restart taaki naya version apply ho jaye
+          await relaunch();
+        }
+      } catch (error) {
+        console.error("Update check fail ho gaya:", error);
+      }
+    };
+
+    checkForUpdates();
+  }, []);
+
   useEffect(() => {
     const initApp = async () => {
       try {
