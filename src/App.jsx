@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { check } from "@tauri-apps/plugin-updater";
 import { relaunch } from "@tauri-apps/plugin-process";
+import { ask } from "@tauri-apps/plugin-dialog";
 import { invoke } from "@tauri-apps/api/core";
 import SystemMonitor from "./components/SystemMonitor.jsx";
 import TitleBar from "./components/TitleBar.jsx";
@@ -12,23 +13,34 @@ import Clipboard from "./components/Clipboard.jsx";
 export default function App() {
   // Auto update check
   useEffect(() => {
-    // Update check karne wala function
-    const checkForUpdates = async () => {
+    const handleUpdates = async () => {
       try {
         const update = await check();
-        if (update?.available) {
-          // Seedha download aur install (Bina user ko pareshan kiye background mein)
-          await update.downloadAndInstall();
 
-          // App restart taaki naya version apply ho jaye
-          await relaunch();
+        if (update) {
+          // Ek sundar sa popup
+          const confirmUpdate = await ask(
+            `New version ${update.version} taiyaar hai! Kya aap abhi install karna chahte hain Bolo Bolo?`,
+            {
+              title: "Software Update found!",
+              kind: "info",
+              okLabel: "Yes Do it Baby!",
+              cancelLabel: "Baad mein",
+            }
+          );
+
+          if (confirmUpdate) {
+            console.log("Download shuru ho raha hai...");
+            await update.downloadAndInstall();
+            await relaunch();
+          }
         }
       } catch (error) {
-        console.error("Update check fail ho gaya:", error);
+        console.error("Update error:", error);
       }
     };
 
-    checkForUpdates();
+    handleUpdates();
   }, []);
 
   useEffect(() => {

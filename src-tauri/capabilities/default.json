@@ -60,6 +60,7 @@
     "store:allow-load",
     "shell:default",
     "process:allow-restart",
-    "updater:default"
+    "updater:default",
+    "dialog:allow-ask"
   ]
 }
