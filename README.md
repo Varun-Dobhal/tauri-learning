@@ -72,6 +72,112 @@ src-tauri/
 
 ---
 
+# ⚙️ Project Setup & Installation Guide
+
+This guide explains how to **set up and run the Tauri v2 desktop application locally**.
+
+---
+
+## 📌 Prerequisites
+
+Make sure the following tools are installed on your system:
+
+### 1️⃣ Node.js (LTS)
+Download and install from:  
+https://nodejs.org/
+
+Verify:
+```bash
+node -v
+npm -v
+```
+
+Install Rust using rustup:
+
+rustup install stable
+rustup default stable
+
+
+Verify:
+
+rustc --version
+cargo --version
+Install the Tauri CLI globally:
+
+cargo install tauri-cli
+
+
+Verify:
+
+tauri --version
+
+📥 Clone the Repository
+git clone https://github.com/<your-username>/tauri-learning.git
+cd tauri-learning
+
+📦 Install Frontend Dependencies
+npm install
+
+
+This installs:
+
+React dependencies
+
+Tauri JS bindings
+
+Plugins (clipboard, fs, dialog, etc.)
+
+🚀 Run in Development Mode
+npm run tauri dev
+
+
+This command will:
+
+Start the Vite dev server
+
+Launch the Tauri desktop window
+
+Enable hot-reload for frontend & backend
+
+🏗 Build Production Executable
+npm run tauri build
+
+
+Generated binaries will be available at:
+
+src-tauri/target/release/bundle/
+
+
+For Windows, this includes:
+
+.exe installer
+
+.msi installer
+
+🔐 Notes
+
+This project uses Tauri v2
+
+Native OS permissions are controlled via capability files
+
+Auto-update works only with GitHub Releases
+
+Windows Defender may prompt on first run (normal for unsigned local builds)
+
+🧹 Common Fixes
+If build fails:
+cargo clean
+npm install
+npm run tauri dev
+
+If permissions error occurs:
+
+Check:
+
+src-tauri/capabilities/
+
+---
+
 ## 🎯 Goal
 
 To build a **real desktop-grade application** using **Rust & Tauri v2**,  
