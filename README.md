@@ -1,16 +1,90 @@
-# React + Vite
+# 🦀 Tauri v2 Desktop Application
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A **production-grade desktop application** built with **Tauri v2 + Rust + React**, focused on **real-world OS integration**, **background tasks**, and **secure auto-updates**.
 
-Currently, two official plugins are available:
+This project was developed as a **hands-on learning journey**, not a tutorial clone.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## ✨ Key Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- Custom **native title bar** (no OS decorations)
+- File system access (Open / Save / Shortcuts)
+- Clipboard integration (Copy / Paste)
+- **Unsaved-changes protection** with close confirmation
+- **System tray** (Show / Hide / Quit)
+- **Real-time system monitor** (CPU, RAM, OS info)
+- Background Rust tasks with event streaming
+- Secure **state management in Rust**
+- **Auto-update system** with GitHub releases
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 🧠 Core Concepts Learned
+
+- Tauri v2 architecture & security model
+- Rust backend ↔ React frontend communication
+- `invoke()` vs event-based (`emit / listen`) updates
+- Background threads & shared state (`Mutex`, `State`)
+- OS-level APIs (window, tray, filesystem, clipboard)
+- CI/CD release automation with GitHub Actions
+- Signed auto-updates (production ready)
+
+---
+
+## 🛠 Tech Stack
+
+- **Frontend:** React + Vite
+- **Backend:** Rust (Tauri v2)
+- **System APIs:** sysinfo
+- **CI/CD:** GitHub Actions
+- **Target OS:** Windows (desktop)
+
+---
+
+## 📂 Project Structure
+
+src/ → React frontend
+src-tauri/
+├─ main.rs → App entry
+├─ lib.rs → Plugins & commands
+├─ state/ → Global Rust state
+├─ monitor/ → Background system monitor
+└─ setup/ → Tray & app setup
+
+---
+
+## 🚀 Highlights
+
+- No polling from frontend — **Rust pushes updates**
+- Proper close-handling without infinite loops
+- Clean separation of concerns (modules)
+- Uses **correct Tauri v2 APIs** (not v1 hacks)
+
+---
+
+## 📦 Auto Updates
+
+- GitHub-based release system
+- Signed updater metadata
+- Automatic update prompt on app launch
+- One tag → full desktop release
+
+---
+
+## 🎯 Goal
+
+To build a **real desktop-grade application** using **Rust & Tauri v2**,  
+and strengthen skills relevant to **systems programming, security, and blockchain-based products**.
+
+---
+
+### ⚡ Built with Tauri v2
+
+### 🦀 Powered by Rust
+
+### 🔗 Built by a Rust & Blockchain Developer
+
+👤 Author
+Varun Dobhal
+Rust & Blockchain Developer
