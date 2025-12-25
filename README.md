@@ -92,7 +92,7 @@ node -v
 npm -v
 ```
 
-Install Rust using rustup:
+### Install Rust using rustup:
 
 rustup install stable
 rustup default stable
@@ -111,27 +111,27 @@ Verify:
 
 tauri --version
 
-📥 Clone the Repository
-git clone https://github.com/<your-username>/tauri-learning.git
+### 📥 Clone the Repository
+- git clone https://github.com/<your-username>/tauri-learning.git
 cd tauri-learning
 
-📦 Install Frontend Dependencies
+### 📦 Install Frontend Dependencies
 npm install
 
 
-This installs:
+- This installs:
 
 React dependencies
 
 Tauri JS bindings
 
-Plugins (clipboard, fs, dialog, etc.)
+- Plugins (clipboard, fs, dialog, etc.)
 
-🚀 Run in Development Mode
+### 🚀 Run in Development Mode
 npm run tauri dev
 
 
-This command will:
+- This command will:
 
 Start the Vite dev server
 
@@ -139,7 +139,7 @@ Launch the Tauri desktop window
 
 Enable hot-reload for frontend & backend
 
-🏗 Build Production Executable
+### 🏗 Build Production Executable
 npm run tauri build
 
 
@@ -154,7 +154,7 @@ For Windows, this includes:
 
 .msi installer
 
-🔐 Notes
+### 🔐 Notes
 
 This project uses Tauri v2
 
@@ -164,7 +164,7 @@ Auto-update works only with GitHub Releases
 
 Windows Defender may prompt on first run (normal for unsigned local builds)
 
-🧹 Common Fixes
+### 🧹 Common Fixes
 If build fails:
 cargo clean
 npm install
